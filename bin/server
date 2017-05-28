@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+set_time_limit(0);
+
+function includeIfExists($file) {
+    if (file_exists($file)) {
+        return require_once $file;
+    }
+}
+
+if ( (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) ) {
+    die(
+        'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+        'php composer.phar install'
+    );
+}
+
+define('APPLICATION_PATH', dirname(dirname(__FILE__)));
+
+
+use Symfony\Component\Console\Application;
+use base\console\ServerCommand;
+
+$application = new Application();
+$serverCommand = new ServerCommand();
+
+$application->add($serverCommand);
+
+$application->run();

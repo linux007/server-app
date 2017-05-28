@@ -1,0 +1,28 @@
+{
+    "name": "linux007/server-app",
+    "description": "swoole + yaf web framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "linux007",
+            "email": "bzyyc.happy@163.com"
+        }
+    ],
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "linux007/swoole-server": "dev-master",
+        "symfony/console": "^3.0"
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "php cg/yaf_cg app"
+        ]
+    }
+}
