@@ -22,7 +22,7 @@ class Swoole2Yaf {
 
     }
 
-    public function setRequest(swoole\http\request $request) {
+    public function setRequest(\swoole\http\request $request) {
         $this->swooleReq = $request;
         return $this;
     }
@@ -57,15 +57,14 @@ class Swoole2Yaf {
             $params = array_merge($params, $this->swooleReq->post);
         }
 
-        var_dump($this->swooleReq);
-        exit;
-//        $request_uri = $this->swooleReq->server['request_uri'];
-//
-//        $this->_setRouter($request_uri)->_setUriParams($params);
-//        $this->getYafReq()->method = $this->swooleReq->server['request_method'];
-//        $this->_initHeader()->_initCookie();
-//        $this->getYafReq()->setDispatched(true);
-//        $this->getYafReq()->setRouted(true);
+
+        $request_uri = $this->swooleReq->server['request_uri'];
+
+        $this->_setRouter($request_uri)->_setUriParams($params);
+        $this->getYafReq()->method = $this->swooleReq->server['request_method'];
+        $this->_initHeader()->_initCookie();
+        $this->getYafReq()->setDispatched(true);
+        $this->getYafReq()->setRouted(true);
     }
 
 
@@ -88,8 +87,8 @@ class Swoole2Yaf {
         }
         $this->getYafReq()->setRequestUri(
             strtolower(
-                $this->getYafHttp()->getModuleName() . '/' . $this->getYafHttp()->getControllerName()
-                . '/' . $this->getYafHttp()->getActionName() . '/'
+                $this->getYafReq()->getModuleName() . '/' . $this->getYafReq()->getControllerName()
+                . '/' . $this->getYafReq()->getActionName() . '/'
             )
         );
         return $this;
@@ -100,7 +99,7 @@ class Swoole2Yaf {
     {
         if (is_array($params) && $params) {
             foreach ($params as $key => $val) {
-                $this->getYafHttp()->setParam($key, $val);
+                $this->getYafReq()->setParam($key, $val);
             }
         }
     }
