@@ -28,7 +28,20 @@ class TestController extends Yaf\Controller_Abstract {
 	}
 
 	public function testAction() {
+		$queryFactory = new \Aura\SqlQuery\QueryFactory('mysql');
+		$select = $queryFactory->newSelect();
 
+		$select
+			->cols([
+			'id',                       // column name
+			'name AS namecol',          // one way of aliasing
+			'col_name' => 'col_alias',  // another way of aliasing
+			'COUNT(foo) AS foo_count'   // embed calculations directly
+			])
+			->from('foo')
+			->where('bar > ?', ['bar_val']);
+
+		echo $select->getStatement();
 	    echo 'hello modules' . PHP_EOL;
 	    return false;
     }
