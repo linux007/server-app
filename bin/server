@@ -22,8 +22,14 @@ define('APPLICATION_PATH', dirname(dirname(__FILE__)));
 use Symfony\Component\Console\Application;
 use base\console\ServerCommand;
 
+$appIni = APPLICATION_PATH . '/conf/server.ini';
+
 $application = new Application();
 $serverCommand = new ServerCommand();
+
+if (file_exists($appIni)) {
+    $serverCommand->setAppIni($appIni);
+}
 
 $application->add($serverCommand);
 
