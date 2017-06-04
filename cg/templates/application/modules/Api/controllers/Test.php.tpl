@@ -28,8 +28,66 @@ class TestController extends Yaf\Controller_Abstract {
 	}
 
 	public function testAction() {
+		$queryFactory = new \Aura\SqlQuery\QueryFactory('mysql');
+		$select = $queryFactory->newSelect();
 
+		$select
+			->cols([
+			'id',                       // column name
+			'name AS namecol',          // one way of aliasing
+			'col_name' => 'col_alias',  // another way of aliasing
+			'COUNT(foo) AS foo_count'   // embed calculations directly
+			])
+			->from('foo')
+			->where('bar > ?', ['bar_val']);
+
+		echo $select->getStatement();
 	    echo 'hello modules' . PHP_EOL;
 	    return false;
     }
+
+	public function dbAction() {
+		$config = new Yaf\Config\Ini(APPLICATION_PATH . '/conf/database.ini');
+		$config = $config->toArray();
+
+		$conn = base\component\database\DriverManager::getConnection('default', $config);
+
+		$queryFactory = $conn->getQueryFactory();
+		$select = $queryFactory->newSelect();
+
+		$select
+			->cols([
+			'id',                       // column name
+			'name AS namecol',          // one way of aliasing
+			])
+			->from('crontab')
+			->where('id = :id')
+			->bindValue('id', 7);
+
+		//		echo $select->getStatement() . PHP_EOL;
+		//
+		//		print_r($select->getBindValues());
+		//
+		//		$result = $conn->fetchOne($select->getStatement(), $select->getBindValues());
+
+		//		print_r($result);
+
+		$insert = $queryFactory->newInsert();
+		$insert->into('crontab')
+		->cols([
+		'name' => 'test2',
+		'command' => '/bin/echo \test2\'',
+		'schedule' => '* * * * * *',
+		'hostname' => '192.168.56.5',
+		'createAt' => time(),
+		'updateAt' => time()
+		]);
+
+		echo $insert->getStatement();
+
+		$affected = $conn->exec($insert->getStatement(), $insert->getBindValues());
+
+		echo $affected;
+		return false;
+	}
 }
